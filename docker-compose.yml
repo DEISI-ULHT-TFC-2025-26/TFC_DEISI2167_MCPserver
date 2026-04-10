@@ -1,0 +1,45 @@
+services:
+  llm:
+    image: ollama/ollama:latest
+    container_name: llm
+    ports:
+      - "11434:11434"
+    volumes:
+      - llm_data:/root/.ollama
+    networks:
+      - mcp_network
+
+  db:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: mcp_sqlserver
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Password_123!"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    networks:
+      - mcp_network
+
+  mcp-server:
+    image: python:3.12-slim
+    container_name: mcp-server
+    volumes:
+      - ./mcp-server:/app
+    working_dir: /app
+    command: bash -c "pip install --no-cache-dir -r requirements.txt && python main.py"
+    ports:
+      - "8080:8080"
+    networks:
+      - mcp_network
+    depends_on:
+      - db
+
+volumes:
+  llm_data:
+
+networks:
+  mcp_network:
+    driver: bridge
