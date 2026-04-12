@@ -9,10 +9,7 @@ O projeto consiste numa nova adoção de IA nas empresas, com uma integração s
 [Relatório](docs/TFC_a22303085.pdf)
 
 
-Universidade Lusófona de Humanidades e Técnologias - DEISI
 
-Trabalho Final de Curso (TFC)
+Autor: Fábio Jorge (a22303085)
 
-Autor: Fábio Jorge (n.º 22303085)
 
-Ano Letivo: 2025/2026
