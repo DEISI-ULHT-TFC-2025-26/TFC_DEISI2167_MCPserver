@@ -1,11 +1,18 @@
 MCP Server
 
-Este repositório contém uma implementação de um servidor baseado no Model Context Protocol (MCP). O objetivo principal é servir de ponte segura e padronizada entre Modelos de Linguagem (LLMs) e sistemas de dados estruturados, como Data Warehouse.
+Este repositório contém a implementação de um servidor baseado no Model Context Protocol (MCP). O objetivo principal é servir de ponte segura e padronizada entre Modelos de Linguagem (LLMs) e sistemas de dados estruturados, como Data Warehouse. 
+O projeto consiste numa nova adoção de IA nas empresas, com uma integração segura, auditável e determinística entre LLms e grande sistemas de dados.
 
 
-https://github.com/user-attachments/assets/02329a93-61e0-45db-bf01-14ea340d513a
-
-
-[Youtube](https://youtu.be/bJ8VfqrNo5A)
+[Demonstração no Youtube](https://youtu.be/bJ8VfqrNo5A)
 
 [Relatório](docs/TFC_a22303085.pdf)
+
+
+Universidade Lusófona de Humanidades e Técnologias - DEISI
+
+Trabalho Final de Curso (TFC)
+
+Autor: Fábio Jorge (n.º 22303085)
+
+Ano Letivo: 2025/2026
