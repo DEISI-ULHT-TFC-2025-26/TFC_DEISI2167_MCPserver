@@ -6,6 +6,6 @@ Este repositório contém uma implementação de um servidor baseado no Model Co
 https://github.com/user-attachments/assets/02329a93-61e0-45db-bf01-14ea340d513a
 
 
-https://youtu.be/bJ8VfqrNo5A
+[Youtube (Link)] (https://youtu.be/bJ8VfqrNo5A)
 
 [Relatório (PDF)](docs/TFC_a22303085.pdf)
