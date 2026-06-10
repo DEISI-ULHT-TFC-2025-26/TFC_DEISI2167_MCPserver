@@ -1,9 +1,10 @@
-uvicorn
 fastapi
-fastmcp
+uvicorn[standard]
+sqlalchemy
+pydantic
+mcp[cli]
 psycopg2-binary
 pymysql
 pyodbc
-jinja2
-sqlalchemy
 pymssql
+jinja2
