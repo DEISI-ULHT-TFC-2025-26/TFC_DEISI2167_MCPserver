@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/style.css?v=1.1">
+</head>
+<body>
+    <header>
+        <div class="header-titles">
+            <h1>MCP Server</h1>
+            <h2>Gestão de Ligações a Data Warehouses</h2>
+        </div>
+        <img src="/static/ul.png" alt="ULHT" id="logo">
+    </header>
+
+<main>
+        <section>
+                        
+            
+
+<div style="
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 50%;
+">
+    <h3 id="form-title">Nova Ligação</h3>
+
+    <form id="db-form" onsubmit="saveConnection(event)">
+        <input type="hidden" id="conn_id">
+
+        <table style="border-spacing: 8px;">
+            <tr>
+                <td><label for="name">Nome:</label></td>
+                <td><input type="text" id="name" size="30" required></td>
+            </tr>
+
+            <tr>
+                <td><label for="dialect">Dialeto:</label></td>
+                <td><input type="text" id="dialect" size="30" placeholder="mssql, mysql, etc" required></td>
+            </tr>
+
+            <tr>
+                <td><label for="driver">Driver:</label></td>
+                <td><input type="text" id="driver" size="30" placeholder="pymssql, pymysql, etc "></td>
+            </tr>
+
+            <tr>
+                <td><label for="host">Host:</label></td>
+                <td><input type="text" id="host" size="30"></td>
+            </tr>
+
+            <tr>
+                <td><label for="port">Porta:</label></td>
+                <td><input type="number" id="port" size="30"></td>
+            </tr>
+
+            <tr>
+                <td><label for="username">Utilizador:</label></td>
+                <td><input type="text" id="username" size="30"></td>
+            </tr>
+
+            <tr>
+                <td><label for="password">Password:</label></td>
+                <td><input type="password" id="password" size="30"></td>
+            </tr>
+
+            <tr>
+                <td><label for="database_name">Base de Dados:</label></td>
+                <td><input type="text" id="database_name" size="30" required></td>
+            </tr>
+
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <button type="submit" id="save-btn">Guardar</button>
+                    <button type="button" onclick="resetForm()">Cancelar</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+            <h3>Ligações Atuais</h3>
+            <table border="1" width="100%" style="border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background: #f9f9f9; color: black;">
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Dialeto</th>
+                        <th>Driver</th>
+                        <th>Host</th>
+                        <th>Porta</th>
+                        <th>Base de Dados</th>
+                        <th>Utilizador</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="connections-table-body">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>© FJ 2026 </p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: white;
+}
+
+header {
+    background: white;
+    color: black;
+    padding: 1.5rem 2rem;
+    position: relative; /* Obrigatório para que o #logo se alinhe em relação ao header */
+    display: flex;
+    justify-content: left; /* Centra o título horizontalmente na página */
+    align-items: left;
+    min-height: 90px;
+}
+
+.header-titles {
+    text-align: left; /* Garante o texto bem centrado */
+}
+
+header h1, header p {
+    margin: 0;
+}
+
+header p {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+#logo {
+    height: 160px;
+    position: absolute;
+    right: 2rem;      
+    top: 50%;         
+    transform: translateY(-50%); 
+    border-radius: 6px;
+}
+
+main {
+    padding: 2rem;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+footer {
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}

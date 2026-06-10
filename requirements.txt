@@ -1,0 +1,9 @@
+uvicorn
+fastapi
+fastmcp
+psycopg2-binary
+pymysql
+pyodbc
+jinja2
+sqlalchemy
+pymssql

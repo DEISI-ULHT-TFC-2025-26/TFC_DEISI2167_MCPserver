@@ -1,0 +1,24 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore local environment files
+.env
+venv/
+
+# Ignore node modules
+node_modules/
+
+# Ignore logs
+*.log
+
+# Ignore Dockerfile itself if needed
+Dockerfile.old
+Dockerfile
+.DS_Store
+.dockerignore
+.git
+.gitignore
+ddl.py
+install.ipynb
+
