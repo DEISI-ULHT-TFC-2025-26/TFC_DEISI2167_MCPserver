@@ -3,8 +3,10 @@ uvicorn[standard]
 sqlalchemy
 pydantic
 mcp[cli]
+fastmcp
 psycopg2-binary
 pymysql
 pyodbc
 pymssql
 jinja2
+openpyxl

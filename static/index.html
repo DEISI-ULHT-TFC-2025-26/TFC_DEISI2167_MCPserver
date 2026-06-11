@@ -37,16 +37,18 @@
                 <td><input type="text" id="name" size="30" required></td>
             </tr>
 
+           <tr>
             <tr>
-                <td><label for="dialect">Dialeto:</label></td>
-                <td><input type="text" id="dialect" size="30" placeholder="mssql, mysql, etc" required></td>
+                <td><label for="db_preset">Tipo de Base de Dados:</label></td>
+                <td>
+                    <select id="db_preset" style="width: 242px; padding: 4px; font-size: 14px;" required>
+                        <option value="">Selecione o motor de BD...</option>
+                        <option value="mssql:pymssql">SQL Server (pymssql)</option>
+                        <option value="mysql:pymysql">MySQL (pymysql)</option>
+                        <option value="postgresql:psycopg2">PostgreSQL (psycopg2)</option>
+                    </select>
+                </td>
             </tr>
-
-            <tr>
-                <td><label for="driver">Driver:</label></td>
-                <td><input type="text" id="driver" size="30" placeholder="pymssql, pymysql, etc "></td>
-            </tr>
-
             <tr>
                 <td><label for="host">Host:</label></td>
                 <td><input type="text" id="host" size="30"></td>

@@ -8,6 +8,8 @@ from urllib.parse import urlparse, urlunparse
 import os
 import csv
 from sqlalchemy import select, table, column
+import json
+import openpyxl
 
 class DWConnection:
     """
@@ -47,6 +49,7 @@ class DWConnection:
             print(f"Error connecting to database: {e}")
             raise
         
+
     def list_schemas(self):
         """Return a list of all schemas in the database."""
         self.connect()
@@ -59,6 +62,7 @@ class DWConnection:
         except SQLAlchemyError as e:
             print(f"Error fetching schemas: {e}")
             return []
+
 
     def list_tables(self):
         """Return a list of table names including schema: schema.table"""
@@ -74,6 +78,7 @@ class DWConnection:
         except SQLAlchemyError as e:
             print(f"Error fetching tables: {e}")
             return []
+
 
     def list_table_metadata(self, table_name: str = None):
         """
@@ -97,6 +102,7 @@ class DWConnection:
             print(f"Error fetching metadata for table {schema}.{table_name}: {e}")
             return {}
         
+
     def list_all_tables_metadata(self):
         """
         Return metadata for all tables in all schemas:
@@ -143,13 +149,16 @@ class DWConnection:
             print(f"Error fetching tables metadata: {e}")
             return {}
 
+
     def list_fact_tables(self):
         fact_tables = self.list_tables()
         return [ t for t in fact_tables if t.lower().split('.')[-1].startswith(('f_', 'fact_'))]  # Filter tables that start with "Fact_"
 
+
     def list_dimension_tables(self):
         dimension_tables = self.list_tables() 
         return [t for t in dimension_tables if t.lower().split('.')[-1].startswith(("dim_", "d_"))]  # Filter tables that start with "Dim_" or "D_"
+
 
     def execute_query(self, query: str) -> str:
         if not query.strip().upper().startswith("SELECT"):
@@ -164,6 +173,7 @@ class DWConnection:
         except Exception as e:
             return f"Erro ao executar query: {str(e)}"
         
+
     def get_column_unique_values(self, table_name: str, column_name: str):
         """Devolve até 50 valores únicos de uma coluna."""
         self.connect()
@@ -186,6 +196,7 @@ class DWConnection:
                 return valores
         except Exception as e:
             return f"Erro ao obter valores únicos: {str(e)}"
+
 
     def get_table_relationships(self, table_name: str):
         """Descobre as chaves estrangeiras (Foreign Keys) de uma tabela."""
@@ -213,6 +224,7 @@ class DWConnection:
             return relationships
         except Exception as e:
             return f"Erro ao inspecionar relações: {str(e)}"
+
 
     def export_query_to_csv(self, query: str, filename: str) -> str:
         """Executa a query e exporta para a pasta static/exports"""
@@ -249,6 +261,84 @@ class DWConnection:
                 return f"Sucesso! Os dados foram guardados no ficheiro {filename}. URL para download: http://127.0.0.1:9991/static/exports/{filename}"
         except Exception as e:
             return f"Erro ao exportar CSV: {str(e)}"
+        
+
+    def export_query_to_json(self, query: str, filename: str) -> str:
+        """Executa a query e exporta para a pasta static/exports em formato JSON"""
+        query_upper = query.strip().upper()
+        if not (query_upper.startswith("SELECT") or query_upper.startswith("WITH")):
+            return "Erro de Segurança: Apenas SELECT ou WITH são permitidos."
+            
+        self.connect()
+        try:
+            with self.engine.connect() as conn:
+                result = conn.execute(text(query))
+                linhas = result.fetchall()
+                
+                if not linhas:
+                    return "A query não retornou dados para exportar."
+
+                export_dir = os.path.join("static", "exports")
+                os.makedirs(export_dir, exist_ok=True)
+
+                if not filename.endswith(".json"):
+                    filename += ".json"
+                filepath = os.path.join(export_dir, filename)
+
+                # Converter as linhas em dicionários (Chave: Valor)
+                dados = [dict(zip(result.keys(), row)) for row in linhas]
+
+                # default=str resolve problemas com Datas (datetime) e Decimais da BD
+                with open(filepath, mode='w', encoding='utf-8') as f:
+                    json.dump(dados, f, indent=4, default=str)
+
+                return f"Sucesso! Os dados foram guardados no ficheiro {filename}. URL para download: http://127.0.0.1:9991/static/exports/{filename}"
+        except Exception as e:
+            return f"Erro ao exportar JSON: {str(e)}"
+        
+
+    def export_query_to_excel(self, query: str, filename: str) -> str:
+        """Executa a query e exporta para a pasta static/exports em formato Excel (.xlsx)"""
+        query_upper = query.strip().upper()
+        if not (query_upper.startswith("SELECT") or query_upper.startswith("WITH")):
+            return "Erro de Segurança: Apenas SELECT ou WITH são permitidos."
+            
+        self.connect()
+        try:
+            with self.engine.connect() as conn:
+                result = conn.execute(text(query))
+                linhas = result.fetchall()
+                
+                if not linhas:
+                    return "A query não retornou dados para exportar."
+
+                export_dir = os.path.join("static", "exports")
+                os.makedirs(export_dir, exist_ok=True)
+
+                if not filename.endswith(".xlsx"):
+                    filename += ".xlsx"
+                filepath = os.path.join(export_dir, filename)
+
+                # Criar o ficheiro Excel
+                wb = openpyxl.Workbook()
+                ws = wb.active
+                ws.title = "Exportação de Dados"
+
+                # Escrever o cabeçalho (nomes das colunas)
+                ws.append(list(result.keys()))
+
+                # Escrever os dados
+                for row in linhas:
+                    # Converte cada valor para lidar com tipos incompatíveis do SQLAlchemy
+                    linha_limpa = [str(val) if val is not None else "" for val in row]
+                    ws.append(linha_limpa)
+
+                # Guardar o ficheiro
+                wb.save(filepath)
+
+                return f"Sucesso! Os dados foram guardados no ficheiro {filename}. URL para download: http://127.0.0.1:9991/static/exports/{filename}"
+        except Exception as e:
+            return f"Erro ao exportar Excel: {str(e)}"
     
 
 

@@ -36,11 +36,15 @@ async function saveConnection(event) {
 
     const id = document.getElementById("conn_id").value;
     
+    // Obtém o dialeto e o driver a partir da dropdown selecionada
+    const dbPreset = document.getElementById("db_preset").value;
+    const [dialect, driver] = dbPreset.split(":");
+    
     // Constrói o objeto (convertendo porto para inteiro se existir)
     const payload = {
         name: document.getElementById("name").value,
-        dialect: document.getElementById("dialect").value,
-        driver: document.getElementById("driver").value || null,
+        dialect: dialect,
+        driver: driver || null,
         host: document.getElementById("host").value || null,
         port: document.getElementById("port").value ? parseInt(document.getElementById("port").value) : null,
         username: document.getElementById("username").value || null,
@@ -85,12 +89,13 @@ function editConnection(id) {
     // Preenche o formulário
     document.getElementById("conn_id").value = conn.id;
     document.getElementById("name").value = conn.name;
-    document.getElementById("dialect").value = conn.dialect;
-    document.getElementById("driver").value = conn.driver || '';
+    
+    // Reconstrói o valor do preset combinando o dialeto e o driver vindos da API
+    document.getElementById("db_preset").value = `${conn.dialect}:${conn.driver || ''}`;
+    
     document.getElementById("host").value = conn.host || '';
     document.getElementById("port").value = conn.port || '';
     document.getElementById("username").value = conn.username || '';
-    // password idealmente não é devolvida no GET por segurança, mas se for:
     document.getElementById("password").value = conn.password || '';
     document.getElementById("database_name").value = conn.database_name;
 
