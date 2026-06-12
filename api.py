@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from typing import Optional
 from crud import DB
 import hashlib
+import os
+import secrets
 
 # 1. Definir o Modelo de Dados esperado pelo formulário (Pydantic)
 class ConnectionModel(BaseModel):
@@ -25,15 +27,13 @@ class ConnectionModel(BaseModel):
 security = HTTPBasic()
 
 def verificar_admin(credentials: HTTPBasicCredentials = Depends(security)):
-    try:
-        with open('.admin_secret', 'r') as f:
-            hash_guardado = f.read().strip()
-    except FileNotFoundError:
-        hash_guardado = hashlib.sha256(b"admin").hexdigest()
+    ADMIN_USER = os.getenv("ADMIN_USER", "admin")
+    ADMIN_PASS = os.getenv("ADMIN_PASSWORD", "admin")
 
-    hash_inserido = hashlib.sha256(credentials.password.encode()).hexdigest()
+    correct_username = secrets.compare_digest(credentials.username, ADMIN_USER)
+    correct_password = secrets.compare_digest(credentials.password, ADMIN_PASS)
 
-    if credentials.username != "admin" or hash_inserido != hash_guardado:
+    if not (correct_username and correct_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciais incorretas",
@@ -54,13 +54,14 @@ def register_api(name: str, version: str, db: DB) -> FastAPI:
     @app.on_event("startup")
     async def verificar_seguranca_inicial():
         import os
-        if not os.path.exists('.admin_secret'):
+        #alerta se o utilizador não tiver passado a password no Docker
+        if os.getenv("ADMIN_PASSWORD") is None:
             print("\n" + "⚠️ "*25)
-            print(" AVISO DE SEGURANÇA: Password por defeito em uso! ")
-            print(" O sistema está configurado com as credenciais: admin / admin")
+            print(" AVISO DE SEGURANÇA: Nenhuma password definida no Docker! ")
+            print(" O sistema está a usar as credenciais por defeito: admin / admin")
             print(" ")
-            print(" Para proteger o sistema, abra outro terminal e corra:")
-            print(" -> python set_password.py ou python3 set_password.py")
+            print(" Para proteger o sistema, pare o contentor e inicie novamente com a flag:")
+            print(" -> -e ADMIN_PASSWORD=\"sua_password_segura\"")
             print("⚠️ "*25 + "\n")
     
     # Monta a pasta static

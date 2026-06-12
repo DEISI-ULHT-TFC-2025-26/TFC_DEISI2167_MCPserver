@@ -19,15 +19,25 @@ O servidor expõe um conjunto de *tools* que permitem aos agentes de IA interagi
 * **Integração IA:** Langflow, Model Context Protocol (MCP)
 
 ## 📋 Pré-requisitos
-Para que o servidor funcione e interaja corretamente com os modelos de linguagem, é necessário garantir a seguinte infraestrutura:
+Graças à contentorização do projeto, o ambiente de execução é isolado e livre de dependências complexas no sistema operativo anfitrião. Apenas é necessário garantir a seguinte infraestrutura:
 
-* **Python 3.10+**: Instalado no ambiente onde o servidor vai correr.
-* **Docker / Docker Desktop**: Necessário para instanciar e gerir rapidamente os contentores do SQL Server e/ou do Langflow em ambiente local.
-* **Cliente MCP (Langflow)**: Uma instância local ou em cloud do Langflow configurada para atuar como agente e consumir as *tools* do servidor. Em alternativa, qualquer outro cliente compatível com o protocolo MCP (ex: Claude Desktop).
-* **Motor de Base de Dados**: Uma instância de Microsoft SQL Server a correr localmente ou num servidor remoto, onde os Data Warehouses (ex: BikeStores, MediaFlix) estejam alojados.
+* **Docker / Docker Desktop**: Instalado e em execução na máquina local ou servidor.
+* **Cliente MCP (Langflow)**: Uma instância local ou em cloud do Langflow configurada para atuar como agente e consumir as *tools* do servidor. 
+* **Motor de Base de Dados**: Uma instância de Microsoft SQL Server a correr localmente ou num servidor remoto, onde os Data Warehouses (ex: BikeStores, MediaFlix) estejam alojados e acessíveis pela rede do container.
 
 ## ⚙️ Instalação e configuração
 
+## 🐳 Via Docker
+
+A aplicação foi desenhada para correr de forma nativa em contentores, estando a imagem final disponível publicamente no Docker Hub.
+
+### 🐳 Opção 1: Via Docker
+A aplicação foi desenhada para correr de forma nativa em contentores, estando a imagem final disponível publicamente no Docker Hub. Para iniciar o sistema, execute o seguinte comando no terminal. Este comando corre o servidor em *background* (`-d`) e expõe as portas necessárias para a API e para o transporte MCP:
+
+```bash
+docker run -d -p 9990:9990 -p 9991:9991 --platform linux/arm64 --name dw-mcp-server --hostname dw-mcp-server fabiojorge10/dw-mcp-server:latest
+
+###🛠️ Opção 2: Através do Git (python local)
 1. Clonar o repositório
 2. Criar o ambiente virtual e ativá-lo:
    - **Mac/Linux:** `python -m venv venv` e depois `source venv/bin/activate`
@@ -37,9 +47,17 @@ Para que o servidor funcione e interaja corretamente com os modelos de linguagem
 5. A API ficará disponível em: `http://localhost:9991`
 6. Clicar no playground, com a arquitetura no Langflow, e interagir com o agente.
 
+###🛠️ Opção 3: Compilação Manual da Imagem
+Se pretende modificar o código fonte e gerar a sua própria imagem Docker a partir do zero, siga os passos abaixo na raiz do projeto:
+1. Construir a imagem localmente: docker build -t <seu_utilizador>/dw-mcp-server:latest .
+2. Publicar a imagem num registry: docker push <seu_utilizador>/dw-mcp-server:latest
+Executar a nova imagem compilada: docker run -d -p 9990:9990 -p 9991:9991 -e ADMIN_USER="admin" -e ADMIN_PASSWORD="sua_password_segura" --platform linux/arm64 --name dw-mcp-server --hostname dw-mcp-server <seu_utilizador>/dw-mcp-server:latest (caso não coloque nenhuma password, a definção é admin: admin)
+
 ## 🔗 Links úteis
 * 🎥 [Demonstração no Youtube](https://youtu.be/bJ8VfqrNo5A)
+* ⚙️ [DockerHub] (https://hub.docker.com/repository/docker/fabiojorge10/dw-mcp-server/general)
 * 📄 [Relatório do Projeto](docs/TFC_a22303085.pdf)
+
 
 ---
 

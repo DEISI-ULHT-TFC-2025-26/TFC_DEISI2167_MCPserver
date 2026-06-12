@@ -87,9 +87,9 @@ class DWConnection:
         self.connect()  # ensure engine exists
 
         if "." in table_name:
-            schema, table_name = table_name.split(".", 1)  # split at first dot only
+            schema, table_name = table_name.split(".", 1) 
         else:
-            schema = "dbo"           # default schema if missing
+            schema = "dbo"         
         try:
             inspector = inspect(self.engine)
             if schema != None and table_name is not None:
