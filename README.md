@@ -3,7 +3,7 @@
 Este repositório contém a implementação de um servidor baseado no Model Context Protocol (MCP). O objetivo principal é servir de ponte segura e padronizada entre Modelos de Linguagem (LLMs) e sistemas de dados estruturados, como Data Warehouses. 
 O projeto consiste numa nova adoção de IA nas empresas, com uma integração segura, auditável e determinística entre LLMs e grandes sistemas de dados.
 
-## ✨ Principais Funcionalidades
+## ☑️ Principais Funcionalidades
 O servidor expõe um conjunto de *tools* que permitem aos agentes de IA interagir autonomamente com os dados:
 
 * **Gestão de Conexões Dinâmicas:** Capacidade de ligar a múltiplas bases de dados através de identificadores ou nomes configurados.
@@ -22,6 +22,7 @@ O servidor expõe um conjunto de *tools* que permitem aos agentes de IA interagi
 Para que o servidor funcione e interaja corretamente com os modelos de linguagem, é necessário garantir a seguinte infraestrutura:
 
 * **Python 3.10+**: Instalado no ambiente onde o servidor vai correr.
+* **Docker / Docker Desktop**: Necessário para instanciar e gerir rapidamente os contentores do SQL Server e/ou do Langflow em ambiente local.
 * **Cliente MCP (Langflow)**: Uma instância local ou em cloud do Langflow configurada para atuar como agente e consumir as *tools* do servidor. Em alternativa, qualquer outro cliente compatível com o protocolo MCP (ex: Claude Desktop).
 * **Motor de Base de Dados**: Uma instância de Microsoft SQL Server a correr localmente ou num servidor remoto, onde os Data Warehouses (ex: BikeStores, MediaFlix) estejam alojados.
 

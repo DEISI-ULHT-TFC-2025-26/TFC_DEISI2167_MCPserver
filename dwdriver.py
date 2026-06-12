@@ -56,7 +56,6 @@ class DWConnection:
         try:
             inspector = inspect(self.engine)
             schemas = inspector.get_schema_names()
-            # Optional: skip system schemas for SQL Server
             schemas = [s for s in schemas if s.lower() not in ["sys", "information_schema"]]
             return schemas
         except SQLAlchemyError as e:
@@ -163,7 +162,7 @@ class DWConnection:
     def execute_query(self, query: str) -> str:
         if not query.strip().upper().startswith("SELECT"):
            return "Erro de Segurança: Apenas SELECT é permitido."
-        self.connect()  # ensure engine exists
+        self.connect()
         try:
             with self.engine.connect() as conn:
 
@@ -178,7 +177,6 @@ class DWConnection:
         """Devolve até 50 valores únicos de uma coluna."""
         self.connect()
         
-        # Separar schema do nome da tabela, se existir
         if "." in table_name:
             schema, t_name = table_name.split(".", 1)
         else:
@@ -186,7 +184,6 @@ class DWConnection:
             t_name = table_name
 
         try:
-            # Usar SQLAlchemy Core para ser compatível com MySQL (LIMIT) e SQL Server (TOP)
             tbl = table(t_name, column(column_name), schema=schema)
             stmt = select(tbl.c[column_name]).distinct().limit(50)
             
@@ -229,7 +226,6 @@ class DWConnection:
     def export_query_to_csv(self, query: str, filename: str) -> str:
         """Executa a query e exporta para a pasta static/exports"""
         query_upper = query.strip().upper()
-        # Aproveitamos para corrigir a falha de segurança e permitir "WITH" (CTEs)
         if not (query_upper.startswith("SELECT") or query_upper.startswith("WITH")):
             return "Erro de Segurança: Apenas SELECT ou WITH são permitidos."
             
@@ -246,15 +242,13 @@ class DWConnection:
                 export_dir = os.path.join("static", "exports")
                 os.makedirs(export_dir, exist_ok=True)
 
-                # Limpar e garantir a extensão
                 if not filename.endswith(".csv"):
                     filename += ".csv"
                 filepath = os.path.join(export_dir, filename)
 
-                # Escrever o CSV
                 with open(filepath, mode='w', newline='', encoding='utf-8') as f:
                     writer = csv.writer(f)
-                    writer.writerow(result.keys()) # Cabeçalho com o nome das colunas
+                    writer.writerow(result.keys())
                     for row in linhas:
                         writer.writerow(row)
 
@@ -285,10 +279,8 @@ class DWConnection:
                     filename += ".json"
                 filepath = os.path.join(export_dir, filename)
 
-                # Converter as linhas em dicionários (Chave: Valor)
                 dados = [dict(zip(result.keys(), row)) for row in linhas]
 
-                # default=str resolve problemas com Datas (datetime) e Decimais da BD
                 with open(filepath, mode='w', encoding='utf-8') as f:
                     json.dump(dados, f, indent=4, default=str)
 
@@ -324,16 +316,12 @@ class DWConnection:
                 ws = wb.active
                 ws.title = "Exportação de Dados"
 
-                # Escrever o cabeçalho (nomes das colunas)
                 ws.append(list(result.keys()))
 
-                # Escrever os dados
                 for row in linhas:
-                    # Converte cada valor para lidar com tipos incompatíveis do SQLAlchemy
                     linha_limpa = [str(val) if val is not None else "" for val in row]
                     ws.append(linha_limpa)
 
-                # Guardar o ficheiro
                 wb.save(filepath)
 
                 return f"Sucesso! Os dados foram guardados no ficheiro {filename}. URL para download: http://127.0.0.1:9991/static/exports/{filename}"
